@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Генетический профиль</title>
+<meta name="description" content="Подробный разбор ДНК-теста по каждому гену: как это устроено внутри.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff; --ink:#16161a; --muted:#6f6e77; --faint:#a3a1ab;
+    --line:#ededf0; --soft:#f7f7f8; --good:#37935f; --warn:#b9821a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html{scroll-behavior:smooth; -webkit-text-size-adjust:100%}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'Manrope',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    font-weight:400; line-height:1.62; letter-spacing:-.011em;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  }
+  .topnav{position:fixed; top:0; left:0; right:0; z-index:50;
+    background:rgba(255,255,255,.9); backdrop-filter:saturate(180%) blur(14px);
+    border-bottom:1px solid var(--line); padding-top:env(safe-area-inset-top)}
+  .topnav .row{display:flex; gap:2px; overflow-x:auto; padding:9px 14px; -webkit-overflow-scrolling:touch; scrollbar-width:none}
+  .topnav .row::-webkit-scrollbar{display:none}
+  .topnav a{flex:0 0 auto; text-decoration:none; color:var(--muted); font-size:13px; font-weight:600;
+    padding:6px 13px; border-radius:100px; white-space:nowrap; transition:.18s}
+  .topnav a:hover{color:var(--ink); background:var(--soft)}
+  .topnav a.on{color:#fff; background:var(--ink)}
+  main{max-width:680px; margin:0 auto; padding:0 22px}
+  .hero{padding:118px 0 30px}
+  .kicker{font-size:12px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:var(--faint); margin-bottom:16px}
+  .hero h1{font-size:44px; line-height:1.03; font-weight:800; letter-spacing:-.035em; margin-bottom:20px}
+  .hero p{font-size:16.5px; color:var(--muted); max-width:54ch}
+  .hero p + p{margin-top:13px}
+  section{padding:50px 0 4px; border-top:1px solid var(--line)}
+  .sh{font-size:12px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:var(--faint); margin-bottom:6px}
+  .h{font-size:26px; font-weight:800; letter-spacing:-.03em; margin-bottom:8px; line-height:1.1}
+  .intro{font-size:15.5px; color:var(--muted); margin-bottom:24px; max-width:54ch}
+  .card{padding:20px 0; border-top:1px solid var(--line)}
+  .card:first-of-type{border-top:none}
+  .ct{display:flex; align-items:baseline; justify-content:space-between; gap:14px; margin-bottom:9px; flex-wrap:wrap}
+  .card h3{font-size:16.5px; font-weight:700; letter-spacing:-.015em}
+  .card h3 small{display:block; font-weight:500; color:var(--faint); font-size:12.5px; margin-top:2px; letter-spacing:0}
+  .geno{flex:0 0 auto; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px; font-weight:600;
+    color:var(--ink); background:var(--soft); padding:5px 11px; border-radius:8px; white-space:nowrap}
+  .card p{font-size:14.7px; color:#3b3a41; margin-top:4px}
+  .card p b{color:var(--ink); font-weight:700}
+  .tag{display:inline-block; font-size:11.5px; font-weight:700; padding:3px 9px; border-radius:100px; margin-top:12px}
+  .tag.good{background:#eaf5ef; color:var(--good)}
+  .tag.warn{background:#faf1de; color:var(--warn)}
+  .tag.neu{background:var(--soft); color:var(--muted)}
+  .reveal{opacity:0; transform:translateY(15px); transition:opacity .7s ease, transform .7s ease}
+  .reveal.in{opacity:1; transform:none}
+  footer{border-top:1px solid var(--line); margin-top:56px; padding:32px 0 90px; color:var(--faint); font-size:13px; line-height:1.7}
+  footer b{color:var(--muted); font-weight:600}
+  @media (max-width:520px){.hero{padding:102px 0 24px}.hero h1{font-size:33px}.h{font-size:22px}}
+</style>
+</head>
+<body>
+
+<nav class="topnav"><div class="row" id="navrow">
+  <a href="#start">Начало</a>
+  <a href="#caffeine">Кофеин и сон</a>
+  <a href="#dopamine">Дофамин и характер</a>
+  <a href="#stress">Стресс и память</a>
+  <a href="#body">Аппетит и мышцы</a>
+  <a href="#gut">Пищеварение</a>
+  <a href="#vitamins">Витамины</a>
+  <a href="#fats">Жиры и обмен</a>
+  <a href="#sugar">Сахар</a>
+  <a href="#heart">Сердце и давление</a>
+  <a href="#blood">Кровь и железо</a>
+  <a href="#immune">Иммунитет</a>
+  <a href="#drugs">Лекарства</a>
+  <a href="#looks">Внешность</a>
+  <a href="#taste">Вкус и мелочи</a>
+</div></nav>
+
+<main>
+
+  <header class="hero" id="start">
+    <div class="kicker reveal">Генетический профиль</div>
+    <h1 class="reveal">Как всё<br>устроено внутри</h1>
+    <p class="reveal">Подробный разбор ДНК-теста, ген за геном. Для каждого показано, за что он отвечает, как работает, и какой вариант достался конкретно тебе.</p>
+    <p class="reveal">Гены это настройки, а не приговор. Почти всё здесь предрасположенность, эффекты чаще небольшие, и почти всё решается сном, питанием, движением и средой. Читай спокойно и с интересом.</p>
+  </header>
+
+  <!-- CAFFEINE & SLEEP -->
+  <section id="caffeine">
+    <div class="sh reveal">01</div><div class="h reveal">Кофеин и сон</div>
+    <p class="intro reveal">Как организм расщепляет кофе и во сколько тянет спать.</p>
+
+    <div class="card reveal"><div class="ct"><h3>CYP1A2<small>главный фермент печени, расщепляющий кофеин</small></h3><span class="geno">C / A</span></div>
+      <p><b>Как устроено.</b> Этот фермент разбирает почти весь поступивший кофеин. Есть быстрая версия и медленная. <b>Твой вариант.</b> Медленный тип: кофеин выводится дольше, поэтому дневная чашка ещё работает в крови вечером. Таким людям кофе комфортнее в первой половине дня.</p>
+      <span class="tag warn">на заметку</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>CYP1A2<small>тяга к кофе, второй маркер</small></h3><span class="geno">C / C</span></div>
+      <p><b>Как устроено.</b> Соседний вариант влияет на то, насколько сильно человека вообще тянет пить кофе. <b>Твой вариант.</b> Пониженная врождённая тяга, то есть организм не гонит за большими дозами кофеина.</p>
+      <span class="tag neu">особенность</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>AHR<small>регулятор скорости фермента CYP1A2</small></h3><span class="geno">T / C</span></div>
+      <p><b>Как устроено.</b> AHR как бы задаёт громкость работы кофеинового фермента. <b>Твой вариант.</b> Промежуточный, дополнительно склоняет систему к более медленной переработке кофеина.</p>
+      <span class="tag neu">особенность</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>ADORA2A<small>рецептор, через который кофеин бодрит</small></h3><span class="geno">T / C</span></div>
+      <p><b>Как устроено.</b> Кофеин цепляется к этому рецептору в мозге и блокирует сигнал усталости. От версии рецептора зависит, бодрит он мягко или превращается в тревожность. <b>Твой вариант.</b> Повышенная чувствительность: кофеин легче даёт дёрганность и сильнее мешает засыпанию.</p>
+      <span class="tag warn">на заметку</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>CLOCK<small>ген внутренних биологических часов</small></h3><span class="geno">A / G</span></div>
+      <p><b>Как устроено.</b> Задаёт суточный ритм, склонность быть жаворонком или совой. <b>Твой вариант.</b> Лёгкий уклон в сторону совы, тело чуть охотнее ложится позже.</p>
+      <span class="tag neu">особенность</span></div>
+  </section>
+
+  <!-- DOPAMINE & CHARACTER -->
+  <section id="dopamine">
+    <div class="sh reveal">02</div><div class="h reveal">Дофамин и характер</div>
+    <p class="intro reveal">Настройки системы удовольствия, мотивации и темперамента.</p>
+
+    <div class="card reveal"><div class="ct"><h3>COMT<small>фермент, убирающий дофамин из лобной коры</small></h3><span class="geno">Met / Met</span></div>
+      <p><b>Как устроено.</b> COMT разбирает дофамин в зоне мышления. Быстрая версия убирает его резко, медленная держит дольше. <b>Твой вариант.</b> Медленный, тип вдумчивого человека. В покое плюс: выше концентрация, память, глубина. В стрессе минус: реакция сильнее, а откат дольше.</p>
+      <span class="tag neu">особенность</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>COMT<small>подтверждающий второй маркер</small></h3><span class="geno">T / T</span></div>
+      <p><b>Как устроено.</b> Второй вариант того же гена, идёт в связке с первым. <b>Твой вариант.</b> Полностью подтверждает медленный тип, вывод устойчивый.</p>
+      <span class="tag neu">особенность</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>DRD2 / ANKK1<small>плотность дофаминовых рецепторов вознаграждения</small></h3><span class="geno">A1 / A1</span></div>
+      <p><b>Как устроено.</b> Определяет, сколько в мозге рецепторов, ловящих сигнал удовольствия. Меньше рецепторов, требовательнее система к стимулу. <b>Твой вариант.</b> Пониженная плотность: мотивация ярче отзывается на сильное и приятное, а к рутине привыкает медленнее. Полезно знать про свою механику мотивации.</p>
+      <span class="tag neu">особенность</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>OPRM1<small>опиоидный рецептор, боль и удовольствие</small></h3><span class="geno">A / A</span></div>
+      <p><b>Как устроено.</b> Через него работают естественное обезболивание и часть чувства награды. <b>Твой вариант.</b> Обычная, типичная версия. Стандартная чувствительность к боли и к обезболивающим по этому гену.</p>
+      <span class="tag neu">норма</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>OXTR<small>рецептор окситоцина, гормона привязанности</small></h3><span class="geno">A / G</span></div>
+      <p><b>Как устроено.</b> Влияет на эмпатию, чувствительность к близости и социальным сигналам. <b>Твой вариант.</b> Промежуточный, без выраженного края в ту или другую сторону.</p>
+      <span class="tag neu">особенность</span></div>
+  </section>
+
+  <!-- STRESS & MEMORY -->
+  <section id="stress">
+    <div class="sh reveal">03</div><div class="h reveal">Стресс, настроение, память</div>
+    <p class="intro reveal">Как нервная система держит нагрузку и восстанавливается.</p>
+
+    <div class="card reveal"><div class="ct"><h3>FKBP5<small>регулятор гормона стресса кортизола</small></h3><span class="geno">C / C</span></div>
+      <p><b>Как устроено.</b> Помогает выключить стрессовую реакцию после того, как опасность миновала. Рисковая версия выключает медленно. <b>Твой вариант.</b> Устойчивый, без рискового аллеля. Система восстановления после стресса на этом уровне крепкая, это хороший противовес к вдумчивому COMT.</p>
+      <span class="tag good">благоприятно</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>BDNF<small>фактор роста и обновления нейронов</small></h3><span class="geno">Val / Val</span></div>
+      <p><b>Как устроено.</b> Белок, который питает нейроны и помогает формировать новые связи, основа обучения и памяти. <b>Твой вариант.</b> Благоприятный, обычная выработка. Хорошо для памяти, обучения и устойчивости к стрессу.</p>
+      <span class="tag good">благоприятно</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>HTR1A<small>рецептор серотонина, гормона спокойствия</small></h3><span class="geno">C / G</span></div>
+      <p><b>Как устроено.</b> Управляет тем, как мозг регулирует уровень серотонина, а значит фон настроения и тревоги. <b>Твой вариант.</b> Несёшь одну копию более чувствительного аллеля. Эффект крошечный, просто чуть более отзывчивый эмоциональный фон.</p>
+      <span class="tag neu">особенность</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>TPH2<small>производство серотонина в мозге</small></h3><span class="geno">G / G</span></div>
+      <p><b>Как устроено.</b> Фермент, из которого получается серотонин в самом мозге. <b>Твой вариант.</b> Обычная, благоприятная версия, без рискового аллеля.</p>
+      <span class="tag good">норма</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>CACNA1C<small>кальциевый канал в нейронах</small></h3><span class="geno">G / A</span></div>
+      <p><b>Как устроено.</b> Участвует в передаче сигналов между нейронами, в исследованиях связан с устойчивостью настроения. <b>Твой вариант.</b> Одна копия варианта, который в больших выборках чуть повышает чувствительность настроения. Эффект очень маленький, только как штрих.</p>
+      <span class="tag neu">особенность</span></div>
+  </section>
+
+  <!-- BODY -->
+  <section id="body">
+    <div class="sh reveal">04</div><div class="h reveal">Аппетит, вес, мышцы</div>
+    <p class="intro reveal">Много спокойных, приятных новостей о теле.</p>
+
+    <div class="card reveal"><div class="ct"><h3>FTO<small>главный ген аппетита и веса</small></h3><span class="geno">T / T</span></div>
+      <p><b>Как устроено.</b> Самый известный ген, влияющий на чувство голода и склонность к набору веса. <b>Твой вариант.</b> Рискового аллеля нет вообще. Аппетит генетически не завышен через этот механизм, тело в этом смысле на твоей стороне.</p>
+      <span class="tag good">благоприятно</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>FTO<small>подтверждающий второй маркер</small></h3><span class="geno">T / T</span></div>
+      <p><b>Как устроено.</b> Соседний вариант того же участка. <b>Твой вариант.</b> Тоже без риска, вывод про аппетит устойчивый.</p>
+      <span class="tag good">благоприятно</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>MC4R<small>рецептор сигнала насыщения в мозге</small></h3><span class="geno">T / T</span></div>
+      <p><b>Как устроено.</b> Принимает сигнал я наелся и гасит голод. Рисковая версия слышит его хуже. <b>Твой вариант.</b> Без рискового аллеля, сытость работает штатно.</p>
+      <span class="tag good">благоприятно</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>ACTN3<small>белок быстрых, силовых мышечных волокон</small></h3><span class="geno">XX · эндуранс</span></div>
+      <p><b>Как устроено.</b> Даёт мышцам взрывную силу. Часть людей его совсем не производит, и мышцы у них смещены в сторону выносливости. <b>Твой вариант.</b> Рабочего белка нет, это выносливостный тип. Длительная умеренная нагрузка даётся природнее, силу приятнее и полезнее строить постепенно.</p>
+      <span class="tag neu">особенность</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>PPARGC1A<small>рост митохондрий, энергостанций клетки</small></h3><span class="geno">C / C</span></div>
+      <p><b>Как устроено.</b> Запускает образование новых митохондрий в ответ на аэробную нагрузку. <b>Твой вариант.</b> Обычная версия, стандартный отклик на кардио.</p>
+      <span class="tag neu">норма</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>ADRB2 · ADRB3<small>адренорецепторы, обмен и жиросжигание</small></h3><span class="geno">типичные</span></div>
+      <p><b>Как устроено.</b> Через них адреналин запускает распад жира и реакцию на нагрузку. <b>Твой вариант.</b> Обычные версии без выраженных крайностей, обмен реагирует стандартно.</p>
+      <span class="tag neu">норма</span></div>
+  </section>
+
+  <!-- GUT -->
+  <section id="gut">
+    <div class="sh reveal">05</div><div class="h reveal">Пищеварение и непереносимости</div>
+    <p class="intro reveal">Что усваивается легко, а что стоит держать в поле зрения.</p>
+
+    <div class="card reveal"><div class="ct"><h3>LCT<small>фермент лактаза, переваривающий молочный сахар</small></h3><span class="geno">G / A</span></div>
+      <p><b>Как устроено.</b> У большинства людей лактаза выключается после детства, у части остаётся на всю жизнь. <b>Твой вариант.</b> Фермент работает во взрослом возрасте, молочные продукты перевариваются нормально.</p>
+      <span class="tag good">благоприятно</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>Целиакия<small>гены иммунитета HLA-DQ2.5 и DQ8</small></h3><span class="geno">нет рисковых версий</span></div>
+      <p><b>Как устроено.</b> Настоящая непереносимость глютена это аутоиммунная болезнь, и она почти невозможна без одного из этих двух вариантов иммунных генов. <b>Твой вариант.</b> Ни того, ни другого нет. Истинную целиакию можно с высокой уверенностью исключить.</p>
+      <span class="tag good">благоприятно</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>ADH1B<small>первый фермент расщепления алкоголя</small></h3><span class="geno">C / C</span></div>
+      <p><b>Как устроено.</b> Превращает спирт в промежуточное вещество. У части людей делает это очень быстро. <b>Твой вариант.</b> Обычная европейская версия, стандартная скорость.</p>
+      <span class="tag neu">норма</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>ALDH2<small>второй фермент, убирающий токсичный ацетальдегид</small></h3><span class="geno">G / G</span></div>
+      <p><b>Как устроено.</b> Обезвреживает продукт распада алкоголя. Поломанная версия даёт покраснение и дурноту от бокала. <b>Твой вариант.</b> Рабочая версия, без реакции покраснения.</p>
+      <span class="tag neu">норма</span></div>
+  </section>
+
+  <!-- VITAMINS -->
+  <section id="vitamins">
+    <div class="sh reveal">06</div><div class="h reveal">Витамины и микроэлементы</div>
+    <p class="intro reveal">Где всё в норме, а где есть смысл поглядывать анализами.</p>
+
+    <div class="card reveal"><div class="ct"><h3>MTHFR<small>обмен фолиевой кислоты, витамина B9</small></h3><span class="geno">677 в норме</span></div>
+      <p><b>Как устроено.</b> Превращает фолиевую кислоту в активную форму. Вокруг этого гена много интернет-страшилок. <b>Твой вариант.</b> Главный участок 677 в полной норме, поэтому особые метилированные формы просто из-за генетики не нужны.</p>
+      <span class="tag good">благоприятно</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>MTHFR<small>второй участок 1298</small></h3><span class="geno">одна копия</span></div>
+      <p><b>Как устроено.</b> Второй вариант того же фермента. <b>Твой вариант.</b> Только одна копия, что при нормальном 677 практически не влияет на обмен фолатов.</p>
+      <span class="tag good">благоприятно</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>FUT2<small>секреторный статус, влияет на витамин B12</small></h3><span class="geno">несекретор</span></div>
+      <p><b>Как устроено.</b> Определяет, выделяются ли определённые сахара на слизистых. Это влияет и на микрофлору, и на уровень B12. <b>Твой вариант.</b> Вероятно несекретор: у таких людей B12 в крови бывает ниже, поэтому его полезно проверять. Бонус того же варианта, врождённая устойчивость к норовирусу, кишечному гриппу.</p>
+      <span class="tag warn">на заметку</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>GC<small>белок-переносчик витамина D в крови</small></h3><span class="geno">G / T</span></div>
+      <p><b>Как устроено.</b> Переносит витамин D по организму, от него зависит его уровень в анализах. <b>Твой вариант.</b> Одна копия аллеля, связанного с более низким витамином D.</p>
+      <span class="tag warn">есть действие</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>CYP2R1<small>фермент, активирующий витамин D</small></h3><span class="geno">A / G</span></div>
+      <p><b>Как устроено.</b> Превращает витамин D в рабочую форму в печени. <b>Твой вариант.</b> Промежуточный, добавляет к тому же уклону вниз. Вместе с предыдущим геном это повод раз в год сдавать 25-OH витамин D и при необходимости добирать добавкой, особенно зимой.</p>
+      <span class="tag warn">есть действие</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>VDR<small>рецептор витамина D в клетках</small></h3><span class="geno">типичный</span></div>
+      <p><b>Как устроено.</b> Принимает витамин D внутри клетки и запускает его эффекты. <b>Твой вариант.</b> Обычные версии, отклик на добавку стандартный.</p>
+      <span class="tag neu">норма</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>SLC23A1<small>транспортёр витамина C</small></h3><span class="geno">C / C</span></div>
+      <p><b>Как устроено.</b> Затягивает витамин C в клетки. <b>Твой вариант.</b> Обычная версия, нормальное усвоение.</p>
+      <span class="tag neu">норма</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>FADS1 · FADS2<small>переработка растительных омега-3</small></h3><span class="geno">эффективно</span></div>
+      <p><b>Как устроено.</b> Превращают короткие растительные омега-3 в длинные, полезные для мозга и сердца. <b>Твой вариант.</b> Эффективный конвертер, меньше зависимость от прямого поступления рыбьего жира.</p>
+      <span class="tag good">благоприятно</span></div>
+  </section>
+
+  <!-- FATS -->
+  <section id="fats">
+    <div class="sh reveal">07</div><div class="h reveal">Жиры и обмен</div>
+    <p class="intro reveal">Как организм обходится с жирами пищи.</p>
+
+    <div class="card reveal"><div class="ct"><h3>APOA5<small>регулятор уровня триглицеридов</small></h3><span class="geno">A / A</span></div>
+      <p><b>Как устроено.</b> Помогает очищать кровь от жиров-триглицеридов. <b>Твой вариант.</b> Благоприятный, без рискового аллеля повышенных триглицеридов.</p>
+      <span class="tag good">благоприятно</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>APOA2<small>чувствительность веса к насыщенным жирам</small></h3><span class="geno">A / G</span></div>
+      <p><b>Как устроено.</b> При одном варианте вес заметнее реагирует на избыток насыщенных жиров. <b>Твой вариант.</b> Промежуточный, поэтому сливочное масло и жирное мясо выгоднее держать умеренно, без крайностей.</p>
+      <span class="tag neu">особенность</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>GCKR<small>баланс между сахаром и жирами крови</small></h3><span class="geno">C / C</span></div>
+      <p><b>Как устроено.</b> Управляет тем, как печень распределяет глюкозу и триглицериды. <b>Твой вариант.</b> Обычная версия, спокойный профиль.</p>
+      <span class="tag neu">норма</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>CETP<small>обмен хорошего холестерина HDL</small></h3><span class="geno">G / A</span></div>
+      <p><b>Как устроено.</b> Влияет на уровень защитного холестерина HDL. <b>Твой вариант.</b> Аллель, связанный с чуть более высоким HDL, приятная мелочь для сосудов.</p>
+      <span class="tag good">благоприятно</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>LIPC<small>печёночная липаза</small></h3><span class="geno">C / C</span></div>
+      <p><b>Как устроено.</b> Фермент, перерабатывающий жиры в печени. <b>Твой вариант.</b> Обычная версия.</p>
+      <span class="tag neu">норма</span></div>
+  </section>
+
+  <!-- SUGAR -->
+  <section id="sugar">
+    <div class="sh reveal">08</div><div class="h reveal">Сахар и диабет</div>
+    <p class="intro reveal">Хорошая база и одна любопытная деталь про время еды.</p>
+
+    <div class="card reveal"><div class="ct"><h3>TCF7L2<small>сильнейший ген риска диабета 2 типа</small></h3><span class="geno">C / C</span></div>
+      <p><b>Как устроено.</b> Влияет на выработку инсулина. Самый весомый распространённый вариант риска диабета. <b>Твой вариант.</b> Без рискового аллеля, базовый генетический риск понижен.</p>
+      <span class="tag good">благоприятно</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>MTNR1B<small>рецептор мелатонина в поджелудочной железе</small></h3><span class="geno">G / G</span></div>
+      <p><b>Как устроено.</b> Вечером мелатонин через этот рецептор притормаживает выброс инсулина. При одном варианте поздняя еда сильнее поднимает сахар. <b>Твой вариант.</b> Обе копии этого варианта, поэтому ранний ужин выгоднее, а поздние приёмы пищи хуже для сахара.</p>
+      <span class="tag warn">на заметку</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>KCNJ11<small>калиевый канал бета-клеток</small></h3><span class="geno">T / C</span></div>
+      <p><b>Как устроено.</b> Участвует в выбросе инсулина в ответ на глюкозу. <b>Твой вариант.</b> Одна слабая рисковая копия, эффект очень небольшой.</p>
+      <span class="tag neu">небольшой уклон</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>PPARG<small>чувствительность тканей к инсулину</small></h3><span class="geno">C / C</span></div>
+      <p><b>Как устроено.</b> Управляет тем, как жировая ткань откликается на инсулин. <b>Твой вариант.</b> Обычная версия.</p>
+      <span class="tag neu">норма</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>KCNQ1<small>ещё один канал, связанный с инсулином</small></h3><span class="geno">C / C</span></div>
+      <p><b>Как устроено.</b> Влияет на секрецию инсулина. <b>Твой вариант.</b> Без рискового аллеля.</p>
+      <span class="tag good">норма</span></div>
+  </section>
+
+  <!-- HEART -->
+  <section id="heart">
+    <div class="sh reveal">09</div><div class="h reveal">Сердце и давление</div>
+    <p class="intro reveal">Пока молодость всё прячет, но вектор знать полезно.</p>
+
+    <div class="card reveal"><div class="ct"><h3>9p21<small>главный участок риска ишемической болезни</small></h3><span class="geno">одна копия</span></div>
+      <p><b>Как устроено.</b> Самый известный сердечный локус, влияет на состояние стенок сосудов. <b>Твой вариант.</b> Одна рисковая копия, небольшой долгосрочный уклон, не про сейчас. Обычная профилактика полностью его перекрывает.</p>
+      <span class="tag neu">небольшой уклон</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>9p21<small>подтверждающий маркер того же участка</small></h3><span class="geno">одна копия</span></div>
+      <p><b>Как устроено.</b> Второй вариант рядом, идёт в паре. <b>Твой вариант.</b> Тоже одна копия, картина согласованная.</p>
+      <span class="tag neu">небольшой уклон</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>AGT<small>ангиотензиноген, регуляция давления</small></h3><span class="geno">A / G</span></div>
+      <p><b>Как устроено.</b> Исходное вещество системы, поднимающей давление и удерживающей соль. <b>Твой вариант.</b> Одна копия варианта, склоняющего к солечувствительному давлению.</p>
+      <span class="tag neu">небольшой уклон</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>ACE<small>фермент, повышающий давление</small></h3><span class="geno">G / A</span></div>
+      <p><b>Как устроено.</b> Ключевой фермент той же системы давления. <b>Твой вариант.</b> Промежуточный. Общий смысл по этим генам, не пересаливать и раз в год мерить давление.</p>
+      <span class="tag neu">небольшой уклон</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>AGTR1<small>рецептор, на который действует та система</small></h3><span class="geno">A / A</span></div>
+      <p><b>Как устроено.</b> Принимает сигнал сужения сосудов. <b>Твой вариант.</b> Без рискового аллеля, это смягчает уклон предыдущих двух.</p>
+      <span class="tag good">благоприятно</span></div>
+  </section>
+
+  <!-- BLOOD -->
+  <section id="blood">
+    <div class="sh reveal">10</div><div class="h reveal">Свёртываемость и железо</div>
+    <p class="intro reveal">Клинически важный раздел, разбирал особенно аккуратно. Здесь спокойно.</p>
+
+    <div class="card reveal"><div class="ct"><h3>Фактор V Лейден<small>ген свёртывания крови F5</small></h3><span class="geno">норма</span></div>
+      <p><b>Как устроено.</b> Самая частая наследственная причина повышенной свёртываемости и тромбозов. <b>Твой вариант.</b> Не носитель. Это важно и хорошо, в том числе при выборе гормональной контрацепции, где этот фактор был бы значим.</p>
+      <span class="tag good">благоприятно</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>Протромбин F2<small>второй ключевой ген тромбозов</small></h3><span class="geno">G / G</span></div>
+      <p><b>Как устроено.</b> Вариант, повышающий уровень белка свёртывания. <b>Твой вариант.</b> В норме, рискового аллеля нет.</p>
+      <span class="tag good">благоприятно</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>HFE<small>ген накопления железа, гемохроматоз</small></h3><span class="geno">носитель H63D</span></div>
+      <p><b>Как устроено.</b> Управляет всасыванием железа. Две поломанные копии дают перегруз железом. <b>Твой вариант.</b> Одна лёгкая копия H63D и без тяжёлой копии C282Y. Риск перегруза практически нулевой, скорее чуть лучше усваивается железо.</p>
+      <span class="tag neu">особенность</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>SERPINA1<small>защита лёгких и печени, антитрипсин</small></h3><span class="geno">без Z-аллеля</span></div>
+      <p><b>Как устроено.</b> Защищает ткани от собственных ферментов. Дефицитная версия вредит лёгким и печени. <b>Твой вариант.</b> Не носитель главного дефицитного аллеля.</p>
+      <span class="tag good">благоприятно</span></div>
+  </section>
+
+  <!-- IMMUNE -->
+  <section id="immune">
+    <div class="sh reveal">11</div><div class="h reveal">Иммунитет</div>
+    <p class="intro reveal">Общий фон по аутоиммунным болезням.</p>
+
+    <div class="card reveal"><div class="ct"><h3>PTPN22<small>тормоз иммунных клеток</small></h3><span class="geno">G / G</span></div>
+      <p><b>Как устроено.</b> Помогает иммунитету не атаковать своё. Рисковая версия тормозит хуже. <b>Твой вариант.</b> Без рискового аллеля, более низкий фон по диабету 1 типа и ревматоиду.</p>
+      <span class="tag good">благоприятно</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>SH2B3<small>регуляция воспаления и клеток крови</small></h3><span class="geno">T / T</span></div>
+      <p><b>Как устроено.</b> Общий регулятор иммунитета и сосудов, слабо связан с автоиммунным фоном и давлением. <b>Твой вариант.</b> Распространённый, эффект в популяции крошечный.</p>
+      <span class="tag neu">особенность</span></div>
+  </section>
+
+  <!-- DRUGS -->
+  <section id="drugs">
+    <div class="sh reveal">12</div><div class="h reveal">Лекарства</div>
+    <p class="intro reveal">Как усваиваются конкретные препараты. Этот раздел полезно показать врачу при серьёзных назначениях.</p>
+
+    <div class="card reveal"><div class="ct"><h3>VKORC1<small>мишень антикоагулянта варфарина</small></h3><span class="geno">повышенная чувствительность</span></div>
+      <p><b>Как устроено.</b> На этот белок действует варфарин. Чувствительная версия требует меньшей дозы. <b>Твой вариант.</b> Чувствительный.</p>
+      <span class="tag warn">сказать врачу</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>CYP2C9<small>фермент, разрушающий варфарин и часть обезболивающих</small></h3><span class="geno">носитель *3</span></div>
+      <p><b>Как устроено.</b> Медленная версия дольше держит препарат в крови. <b>Твой вариант.</b> Одна медленная копия. Вместе с предыдущим геном это значит, что варфарина нужно заметно меньше и с аккуратным подбором.</p>
+      <span class="tag warn">сказать врачу</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>SLCO1B1<small>захват статинов в печень</small></h3><span class="geno">T / C</span></div>
+      <p><b>Как устроено.</b> Затягивает статины из крови в печень. Слабая версия повышает риск мышечных болей. <b>Твой вариант.</b> Промежуточный, чуть выше риск на симвастатине, врачу проще подобрать препарат.</p>
+      <span class="tag neu">на заметку</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>CYP2C19<small>антидепрессанты, лекарства от изжоги, клопидогрел</small></h3><span class="geno">быстрый тип</span></div>
+      <p><b>Как устроено.</b> Разрушает много разных препаратов. Есть быстрые и медленные версии. <b>Твой вариант.</b> Быстрый метаболизатор, часть препаратов может выводиться скорее, иногда это меняет нужную дозу.</p>
+      <span class="tag neu">на заметку</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>CYP3A5<small>фермент для ряда сильных препаратов</small></h3><span class="geno">промежуточный</span></div>
+      <p><b>Как устроено.</b> Участвует в переработке некоторых иммунных и сердечных лекарств. <b>Твой вариант.</b> Промежуточный, важен в основном для узких назначений после трансплантации.</p>
+      <span class="tag neu">на заметку</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>TPMT · DPYD · NUDT15<small>гены безопасности сильных препаратов</small></h3><span class="geno">норма</span></div>
+      <p><b>Как устроено.</b> Определяют переносимость некоторых иммуноподавляющих и химиопрепаратов. Поломки опасны токсичностью. <b>Твой вариант.</b> По всем трём норма, хорошая новость на случай серьёзного лечения.</p>
+      <span class="tag good">благоприятно</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>UGT1A1<small>переработка билирубина, синдром Жильбера</small></h3><span class="geno">C / C</span></div>
+      <p><b>Как устроено.</b> Обезвреживает билирубин, при слабой версии бывает лёгкая желтуха и особенности с рядом лекарств. <b>Твой вариант.</b> Обычная версия, без синдрома Жильбера по этому маркеру.</p>
+      <span class="tag good">благоприятно</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>HLA-B*57:01<small>аллергия на препарат абакавир</small></h3><span class="geno">T / T</span></div>
+      <p><b>Как устроено.</b> Носители дают опасную реакцию на конкретный противовирусный препарат. <b>Твой вариант.</b> Не носитель, препарат безопасен.</p>
+      <span class="tag good">благоприятно</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>ABCG2<small>выведение мочевой кислоты и части лекарств</small></h3><span class="geno">G / T</span></div>
+      <p><b>Как устроено.</b> Выносит мочевую кислоту и некоторые препараты. Слабая версия чуть повышает мочевую кислоту. <b>Твой вариант.</b> Одна такая копия, мелкий уклон, для молодого человека почти без значения.</p>
+      <span class="tag neu">особенность</span></div>
+  </section>
+
+  <!-- LOOKS -->
+  <section id="looks">
+    <div class="sh reveal">13</div><div class="h reveal">Внешность</div>
+    <p class="intro reveal">Что гены говорят о внешности. Проверь, совпадает ли.</p>
+
+    <div class="card reveal"><div class="ct"><h3>HERC2<small>главный ген цвета глаз</small></h3><span class="geno">G / G</span></div>
+      <p><b>Как устроено.</b> Управляет количеством пигмента в радужке, это главный переключатель светлые или карие глаза. <b>Твой вариант.</b> С высокой вероятностью голубые или светлые глаза.</p>
+      <span class="tag neu">черта</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>TYR<small>фермент выработки пигмента меланина</small></h3><span class="geno">склонность к веснушкам</span></div>
+      <p><b>Как устроено.</b> Ключевой фермент пигментации кожи и волос. <b>Твой вариант.</b> Одна копия аллеля, связанного с более светлой кожей и склонностью к веснушкам на солнце.</p>
+      <span class="tag neu">черта</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>MC1R<small>рыжий пигмент и реакция на солнце</small></h3><span class="geno">без рыжих вариантов</span></div>
+      <p><b>Как устроено.</b> Определяет рыжий цвет волос и очень светлую кожу. <b>Твой вариант.</b> Классических рыжих вариантов нет.</p>
+      <span class="tag neu">черта</span></div>
+  </section>
+
+  <!-- TASTE & MISC -->
+  <section id="taste">
+    <div class="sh reveal">14</div><div class="h reveal">Вкус, запах и мелочи</div>
+    <p class="intro reveal">Самое любопытное про восприятие.</p>
+
+    <div class="card reveal"><div class="ct"><h3>TAS2R38<small>рецептор горького вкуса</small></h3><span class="geno">дегустатор</span></div>
+      <p><b>Как устроено.</b> Ловит горькие вещества. От версии зависит, человек дегустатор или почти не чувствует горечь. <b>Твой вариант.</b> По главному маркеру дегустатор, скорее всего горечь в кофе, тонике и зелени ощущается острее среднего.</p>
+      <span class="tag neu">черта</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>ABCC11<small>тип ушной серы и запах тела</small></h3><span class="geno">C / C</span></div>
+      <p><b>Как устроено.</b> Один ген сразу задаёт тип серы и активность пахучих потовых желёз. <b>Твой вариант.</b> Влажный тип серы и обычная работа желёз, самый распространённый в Европе.</p>
+      <span class="tag neu">черта</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>Фоторефлекс<small>чихание на яркий свет</small></h3><span class="geno">C / T</span></div>
+      <p><b>Как устроено.</b> У части людей резкий яркий свет запускает чихание, безобидная особенность нервных путей. <b>Твой вариант.</b> Скорее всего, ты из тех, кто чихает на солнце.</p>
+      <span class="tag neu">черта</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>Спаржа<small>способность чувствовать её запах</small></h3><span class="geno">G / G</span></div>
+      <p><b>Как устроено.</b> Часть людей просто не улавливает специфический запах после спаржи. <b>Твой вариант.</b> Скорее всего, ты его чувствуешь.</p>
+      <span class="tag neu">черта</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>CHRNA5 · CHRNA3<small>привыкание к никотину</small></h3><span class="geno">одна рисковая копия</span></div>
+      <p><b>Как устроено.</b> Никотиновые рецепторы, от которых зависит сила привыкания. <b>Твой вариант.</b> Одна копия варианта более крепкого привыкания. Смысл чисто профилактический, начинать особенно невыгодно, а бросать было бы тяжелее среднего.</p>
+      <span class="tag warn">на заметку</span></div>
+
+    <div class="card reveal"><div class="ct"><h3>PRNP<small>прионный белок, академическая деталь</small></h3><span class="geno">M / M</span></div>
+      <p><b>Как устроено.</b> Вариант этого белка изучают в связи с очень редкими болезнями мозга. <b>Твой вариант.</b> Распространённый тип. Значим лишь в исключительно редких ситуациях, в быту не имеет значения, добавлено для полноты.</p>
+      <span class="tag neu">черта</span></div>
+  </section>
+
+  <footer>
+    <p><b>Как это читать.</b> Это не медицинский диагноз и не назначение. ДНК-тест показывает вероятности и предрасположенности, а не судьбу, и почти всё решается образом жизни. Для важных решений по здоровью сверяйтесь с врачом.</p>
+    <p style="margin-top:10px">Разбор сделан по сырым данным ДНК-теста, ген за геном. Часть генов тест не покрывает, поэтому список подробный, но не исчерпывающий.</p>
+  </footer>
+
+</main>
+
+<script>
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {rootMargin:'0px 0px -6% 0px', threshold:.05});
+  document.querySelectorAll('.reveal').forEach(function(el,i){ el.style.transitionDelay=((i%3)*55)+'ms'; io.observe(el); });
+  var links=[].slice.call(document.querySelectorAll('.topnav a')), map={};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  var navrow=document.getElementById('navrow');
+  var spy=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){
+      links.forEach(function(a){a.classList.remove('on')});
+      var a=map[e.target.id]; if(a){ a.classList.add('on');
+        var r=a.getBoundingClientRect(), pr=navrow.getBoundingClientRect();
+        if(r.left<pr.left||r.right>pr.right) navrow.scrollLeft+=r.left-pr.left-16; }
+    }});
+  }, {rootMargin:'-45% 0px -50% 0px'});
+  document.querySelectorAll('main section, .hero').forEach(function(s){ if(s.id) spy.observe(s); });
+</script>
+</body>
+</html>
